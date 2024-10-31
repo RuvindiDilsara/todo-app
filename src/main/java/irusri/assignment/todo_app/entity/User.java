@@ -1,10 +1,13 @@
 package irusri.assignment.todo_app.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +38,14 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String lastName;
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @JsonManagedReference
+    private List<Todo> todos;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
