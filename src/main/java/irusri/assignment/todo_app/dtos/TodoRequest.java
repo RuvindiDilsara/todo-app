@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-//@NoArgsConstructor
 @AllArgsConstructor
 public class TodoRequest {
     @NotBlank(message = "title is required")

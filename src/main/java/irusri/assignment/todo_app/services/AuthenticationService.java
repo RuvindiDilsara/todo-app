@@ -34,6 +34,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // method for user registering
     public User registerUser(RegisterUserDTO input) {
         logger.info("Attempting to register user with email: {}", input.getEmail());
 
@@ -58,6 +59,7 @@ public class AuthenticationService {
         }
     }
 
+    // Method for user authentication
     public User authenticate(LoginUserDTO input) {
         logger.info("Attempting to authenticate user with email: {}", input.getEmail());
 

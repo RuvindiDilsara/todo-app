@@ -27,6 +27,7 @@ public class TodoService {
     @Autowired
     private TodoRepository todoRepository;
 
+    // create new todo
     @Transactional
     public Todo createTodoForUser(TodoRequest todoRequest, User user) {
         try {
@@ -49,6 +50,7 @@ public class TodoService {
         }
     }
 
+    // get todos for given user with pagination
     public Page<Todo> getTodosForUser(Integer userId, int pageNo, int pageSize) {
         try {
             logger.info("Retrieving Todos for user: {}", userId);
@@ -72,7 +74,7 @@ public class TodoService {
         }
     }
 
-    // Sort Todos by due date or priority
+    // Sort Todos by due date or priority for a user with pagination
     public Page<Todo> getTodosSortedForUser(Integer userId, String sortBy, int pageNo, int pageSize) {
         try {
             logger.info("Sorting Todos for user: {} by {}", userId, sortBy);
@@ -89,7 +91,7 @@ public class TodoService {
         }
     }
 
-    // Get todos based on completion status for a user
+    // Get todos based on completion status for a user with pagination
     public Page<Todo> getTodosByCompletionStatus(Integer userId, boolean completionStatus, int pageNo, int pageSize) {
         try {
             logger.info("Retrieving Todos for user: {} by completion status: {}", userId, completionStatus);
@@ -101,7 +103,7 @@ public class TodoService {
         }
     }
 
-    // Get todos based on due date for a user
+    // Get todos based on due date for a user with pagination
     public Page<Todo> getTodosByDueDate(Integer userId, LocalDate dueDate, int pageNo, int pageSize) {
         try {
             logger.info("Retrieving Todos for user: {} by due date: {}", userId, dueDate);
@@ -113,7 +115,7 @@ public class TodoService {
         }
     }
 
-
+    // delete Todo
     public void deleteTodoForUser(Integer todoId, User user) {
         Todo todo = todoRepository.findById(todoId)
                 .filter(todo1 -> todo1.getUser().getId().equals(user.getId())) // Ensures user can only update their own Todo
@@ -130,6 +132,7 @@ public class TodoService {
         }
     }
 
+    // update todo
     @Transactional
     public Todo updateTodoForUser(Integer todoId, TodoRequest todoRequest, User user) {
         Todo todo = todoRepository.findById(todoId)

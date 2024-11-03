@@ -29,6 +29,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    // Endpoint for user registration
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody @Valid RegisterUserDTO registerUserDto) {
         logger.info("Request to register user: {}", registerUserDto.getEmail());
@@ -37,6 +38,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(registeredUser);
     }
 
+    // Endpoint for user login
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginUserDTO loginUserDto) {
         logger.info("Request to login user: {}", loginUserDto.getEmail());

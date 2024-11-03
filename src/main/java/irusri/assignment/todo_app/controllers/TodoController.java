@@ -10,9 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/todos")
@@ -32,6 +28,7 @@ public class TodoController {
     @Autowired
     private TodoService todoService;
 
+    // Endpoint for creating todos
     @PostMapping
     public ResponseEntity<Todo> createTodo(@RequestBody @Valid TodoRequest todoRequest, @AuthenticationPrincipal User user){
         logger.info("Request to create Todo for user: {}", user.getId());
@@ -40,6 +37,7 @@ public class TodoController {
         return new ResponseEntity<>(createdTodo, HttpStatus.CREATED);
     }
 
+    // Endpoint for getting todos
     @GetMapping("/all")
     public ResponseEntity<Page<Todo>> getTodosForUser(@RequestParam(defaultValue = "0") int pageNo,
                                                       @RequestParam(defaultValue = "10") int pageSize,
@@ -48,14 +46,17 @@ public class TodoController {
         logger.info("Request to get Todos for user: {} with pageNo: {}, pageSize: {}, sortBy: {}",
                 user.getId(), pageNo, pageSize, sortBy);
         Page<Todo> todos = (sortBy == null)
-                ? todoService.getTodosForUser(user.getId(), pageNo, pageSize)
-                : todoService.getTodosSortedForUser(user.getId(), sortBy, pageNo, pageSize);
+                ? todoService.getTodosForUser(user.getId(), pageNo, pageSize) // get all the todos
+                : todoService.getTodosSortedForUser(user.getId(), sortBy, pageNo, pageSize); //get todos sorted by given criteria eg: due date / priority
+        if (todos == null) {
+            return ResponseEntity.noContent().build();
+        }
         logger.info("Retrieved {} Todos for user: {}", todos.getTotalElements(), user.getId());
         return ResponseEntity.ok(todos);
 
     }
 
-    // Search Todos by keyword
+    // Endpoint for searching todos by keyword
     @GetMapping("/search")
     public ResponseEntity<Page<Todo>> searchTodos(@RequestParam String keyword,
                                                   @RequestParam(defaultValue = "0") int pageNo,
@@ -91,6 +92,7 @@ public class TodoController {
         return ResponseEntity.ok(todos);
     }
 
+    // Endpoint for updating todos
     @PutMapping("/{todoId}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Integer todoId,
                                            @RequestBody @Valid TodoRequest todoRequest,
@@ -105,6 +107,7 @@ public class TodoController {
         return ResponseEntity.ok(updatedTodo);
     }
 
+    // Endpoint for deleting todos
     @DeleteMapping("/{todoId}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Integer todoId, @AuthenticationPrincipal User user) {
         logger.info("Request to delete Todo with ID: {} for user: {}", todoId, user.getId());
@@ -112,5 +115,6 @@ public class TodoController {
         logger.info("Todo with ID: {} deleted successfully", todoId);
         return ResponseEntity.noContent().build();
     }
+
 
 }
